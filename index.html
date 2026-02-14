@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TempMail - Samu Tampan Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #f5f5f7; overflow-x: hidden; }
+        .card-shadow { box-shadow: 0 10px 40px rgba(0,0,0,0.04); }
+        .inbox-card { animation: slideUp 0.4s ease-out forwards; }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Toast Notification */
+        #copy_toast { transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); transform: translate(-50%, -100px); opacity: 0; }
+        #copy_toast.show { transform: translate(-50%, 0); opacity: 1; }
+        /* Modal System */
+        .modal-bg { transition: all 0.3s ease; display: none; }
+        .modal-bg.open { display: flex; animation: fadeIn 0.3s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+
+<body class="flex flex-col min-h-screen text-zinc-900 pb-32">
+
+    <div id="copy_toast" class="fixed top-6 left-1/2 z-[150] bg-black text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-zinc-800">
+        <div class="bg-green-500 rounded-full p-1">
+            <svg class="w-3 h-3 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path></svg>
+        </div>
+        <span class="text-sm font-bold tracking-tight">Copy Success</span>
+    </div>
+
+    <div id="mail_modal" class="modal-bg fixed inset-0 z-[110] items-end justify-center p-4 bg-black/40 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-md rounded-[38px] p-8 card-shadow animate-[slideUp_0.4s_ease-out]">
+            <div class="flex justify-between items-center mb-6">
+                <span class="text-[10px] font-black text-zinc-400 uppercase tracking-widest bg-zinc-100 px-3 py-1 rounded-full text-center">Detail Pesan</span>
+                <button onclick="closeModal('mail_modal')" class="w-10 h-10 flex items-center justify-center bg-zinc-50 rounded-full text-zinc-400 hover:text-black">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <h3 id="modal_subject" class="text-xl font-extrabold text-zinc-900 mb-2 leading-tight italic">...</h3>
+            <p id="modal_from" class="text-xs text-green-600 font-bold mb-6 truncate">...</p>
+            <div class="bg-zinc-50 p-6 rounded-[28px] border border-zinc-100 max-h-[300px] overflow-y-auto">
+                <p id="modal_body" class="text-[14px] text-zinc-600 leading-relaxed whitespace-pre-line font-medium">...</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="dev_modal" class="modal-bg fixed inset-0 z-[120] items-center justify-center p-6 bg-black/60 backdrop-blur-md">
+        <div class="bg-white w-full max-w-sm rounded-[40px] p-8 card-shadow text-center">
+            <div class="w-16 h-16 bg-zinc-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                <i class="fa-solid fa-code text-zinc-800 text-xl"></i>
+            </div>
+            <p class="text-[10px] font-black text-zinc-400 uppercase tracking-[3px] mb-1">Web ini di buat oleh:</p>
+            <h2 class="text-2xl font-black text-zinc-900 mb-6 italic underline decoration-green-500 decoration-4">Samu Tampan</h2>
+            
+            <div class="space-y-3 mb-6">
+                <a href="https://wa.me/6285717364406" target="_blank" class="flex items-center justify-center gap-3 bg-[#25D366] text-white p-4 rounded-2xl font-bold hover:scale-[1.03] transition shadow-lg shadow-green-200">
+                    <i class="fa-brands fa-whatsapp text-xl"></i>
+                    <span>6285717364406</span>
+                </a>
+                <a href="https://t.me/SamuDev" target="_blank" class="flex items-center justify-center gap-3 bg-[#0088cc] text-white p-4 rounded-2xl font-bold hover:scale-[1.03] transition shadow-lg shadow-blue-200">
+                    <i class="fa-brands fa-telegram text-xl"></i>
+                    <span>@SamuDev</span>
+                </a>
+            </div>
+            
+            <p class="text-[11px] text-zinc-400 font-medium leading-relaxed mb-8 italic">Hubungi kontak Developer di atas jika ada Masalah mengenai website ini</p>
+            <button onclick="closeModal('dev_modal')" class="w-full py-4 bg-zinc-950 rounded-2xl font-black text-white hover:bg-zinc-800 transition">TUTUP</button>
+        </div>
+    </div>
+
+    <header class="flex justify-between items-center px-6 pt-6 pb-4 max-w-md mx-auto w-full">
+        <h1 class="text-[26px] font-extrabold tracking-tight italic">TempMail</h1>
+        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Samu" class="w-10 h-10 rounded-full border-[3px] border-green-500 shadow-sm">
+    </header>
+
+    <main class="flex-1 max-w-md mx-auto w-full px-5">
+        <div class="bg-white rounded-[38px] p-10 text-center card-shadow mb-6 border border-white">
+            <div class="w-16 h-16 mx-auto mb-5 rounded-full bg-[#fff7e6] flex items-center justify-center">
+                <i class="fa-solid fa-shield text-[#f59e0b] text-2xl"></i>
+            </div>
+            <h2 class="text-[24px] font-bold mb-3 tracking-tight">Temp Identity</h2>
+            <p class="text-[14px] text-zinc-400 font-medium leading-relaxed px-2">Kirim email anonim tanpa takut spam. Identitas aslimu aman bersama kami.</p>
+        </div>
+
+        <div class="bg-white rounded-[32px] p-6 card-shadow mb-8 border border-zinc-50/50">
+            <p class="uppercase text-[11px] tracking-widest text-zinc-400 font-bold mb-4 px-1">Email kamu saat ini</p>
+            <div class="flex items-center justify-between bg-[#f1f5f9] rounded-2xl px-4 py-3 border border-zinc-100">
+                <input type="text" id="email_input" readonly placeholder="Tekan (+) untuk mulai" class="bg-transparent w-full font-semibold text-[#334155] outline-none">
+                <button onclick="copyEmail()" class="text-zinc-400 text-lg hover:text-black transition ml-2">
+                    <i class="fa-regular fa-copy"></i>
+                </button>
+            </div>
+            <div class="flex items-center justify-between mt-4 px-1">
+                <div class="flex items-center gap-2">
+                    <div id="status_dot" class="w-2 h-2 bg-zinc-300 rounded-full"></div>
+                    <p class="text-[12px] text-zinc-400 italic font-medium">Auto-refresh: <span id="timer_text">5s</span></p>
+                </div>
+                <button onclick="openModal('dev_modal')" class="text-[11px] font-black text-red-500 hover:text-red-700 underline underline-offset-4 transition">Ada Masalah?</button>
+            </div>
+        </div>
+
+        <div id="inbox_list" class="space-y-4"></div>
+    </main>
+
+    <button onclick="genEmail()" class="fixed bottom-10 left-1/2 -translate-x-1/2 w-[72px] h-[72px] bg-black text-white text-2xl rounded-full shadow-[0_15px_40px_rgba(0,0,0,0.3)] active:scale-90 transition-all z-50">
+        <i class="fa-solid fa-plus" id="plus_icon"></i>
+    </button>
+
+    <script>
+        function _0x2cc5(){const _0x474c48=['Decrypting...','exception','Error\x20Load!','Error!\x20Coba\x20lagi.','</h3>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<p\x20class=\x22text-[11px]\x20text-zinc-400\x20mt-1\x20line-clamp-1\x20italic\x20font-medium\x22>','body','{}.constructor(\x22return\x20this\x22)(\x20)','139556EevDkW','plus_icon','intro','(((.+)+)+)+$','/messages/','animate-pulse','show','info','bg-zinc-300','pass_','modal_from','<p\x20class=\x22text-center\x20text-zinc-300\x20text-[10px]\x20uppercase\x20font-black\x20mt-10\x20tracking-[4px]\x20animate-pulse\x22>Scanning\x20Data...</p>','POST','length','3245805vpaIGK','return\x20(function()\x20','/accounts','select','clipboard','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22flex\x20justify-between\x20items-center\x20mb-2\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20class=\x22text-[10px]\x20font-extrabold\x20text-green-600\x20uppercase\x20tracking-widest\x20italic\x22>Received</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20class=\x22text-[10px]\x20text-zinc-300\x20font-bold\x20uppercase\x20tracking-tight\x22>Secure</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<h3\x20class=\x22text-[15px]\x20font-bold\x20text-zinc-800\x20line-clamp-1\x20italic\x22>','2378560MsyiGM','subject','getElementById','114xatidX','418630HtGset','animate-spin','from','onclick','133szMNFp','modal_subject','50742UqJLRi','appendChild','1297690ooHHkM','remove','search','className','inbox_list','log','includes','GEN_SECURE_ADDR...','prototype','apply','11540OsOgIk','div','/messages','constructor','(No\x20Subject)','error','hydra:member','samu_','https://api.mail.tm','isSecureContext','add','prepend','removeChild','writeText','bg-white\x20p-6\x20rounded-[32px]\x20card-shadow\x20border\x20border-zinc-50\x20inbox-card\x20cursor-pointer\x20active:scale-95\x20transition-all','createElement','open','status_dot','/domains','warn','innerText','console','random','textarea','bg-green-500','Bearer\x20','application/json','classList','mail_modal','address','timer_text','copy_toast','SENDER:\x20','bind','table','innerHTML','Refresh_Err','toString','json','stringify','__proto__','email_input','catch','value'];_0x2cc5=function(){return _0x474c48;};return _0x2cc5();}const _0x4343b9=_0x5002;(function(_0x367fab,_0x1f9b8d){const _0x1d057a=_0x5002,_0x510614=_0x367fab();while(!![]){try{const _0x20e348=parseInt(_0x1d057a(0x14d))/0x1+parseInt(_0x1d057a(0x15f))/0x2*(parseInt(_0x1d057a(0x14c))/0x3)+-parseInt(_0x1d057a(0x135))/0x4+-parseInt(_0x1d057a(0x155))/0x5+parseInt(_0x1d057a(0x153))/0x6*(-parseInt(_0x1d057a(0x151))/0x7)+-parseInt(_0x1d057a(0x149))/0x8+parseInt(_0x1d057a(0x143))/0x9;if(_0x20e348===_0x1f9b8d)break;else _0x510614['push'](_0x510614['shift']());}catch(_0x96dc90){_0x510614['push'](_0x510614['shift']());}}}(_0x2cc5,0x3c159));const _0x215602=(function(){let _0x3f2b12=!![];return function(_0x110316,_0x5d67ef){const _0x5b63fc=_0x3f2b12?function(){const _0x90bdf2=_0x5002;if(_0x5d67ef){const _0x1dfe1b=_0x5d67ef[_0x90bdf2(0x15e)](_0x110316,arguments);return _0x5d67ef=null,_0x1dfe1b;}}:function(){};return _0x3f2b12=![],_0x5b63fc;};}()),_0x575ea6=_0x215602(this,function(){const _0x434acd=_0x5002;return _0x575ea6[_0x434acd(0x184)]()[_0x434acd(0x157)](_0x434acd(0x138))[_0x434acd(0x184)]()[_0x434acd(0x162)](_0x575ea6)['search'](_0x434acd(0x138));});_0x575ea6();const _0x2823a7=(function(){let _0x8968b2=!![];return function(_0x5ef917,_0x3e3d83){const _0x26ee69=_0x8968b2?function(){const _0x1d7c9c=_0x5002;if(_0x3e3d83){const _0x39e707=_0x3e3d83[_0x1d7c9c(0x15e)](_0x5ef917,arguments);return _0x3e3d83=null,_0x39e707;}}:function(){};return _0x8968b2=![],_0x26ee69;};}()),_0x52f807=_0x2823a7(this,function(){const _0x3be317=_0x5002,_0x18e249=function(){const _0x226517=_0x5002;let _0x152b5d;try{_0x152b5d=Function(_0x226517(0x144)+_0x226517(0x134)+');')();}catch(_0x15529d){_0x152b5d=window;}return _0x152b5d;},_0x579d5d=_0x18e249(),_0xe810cf=_0x579d5d[_0x3be317(0x174)]=_0x579d5d[_0x3be317(0x174)]||{},_0x1c5905=[_0x3be317(0x15a),_0x3be317(0x172),_0x3be317(0x13c),_0x3be317(0x164),_0x3be317(0x18c),_0x3be317(0x181),'trace'];for(let _0x15784c=0x0;_0x15784c<_0x1c5905[_0x3be317(0x142)];_0x15784c++){const _0x5334a1=_0x2823a7[_0x3be317(0x162)][_0x3be317(0x15d)][_0x3be317(0x180)](_0x2823a7),_0x367f1a=_0x1c5905[_0x15784c],_0x166bde=_0xe810cf[_0x367f1a]||_0x5334a1;_0x5334a1[_0x3be317(0x187)]=_0x2823a7[_0x3be317(0x180)](_0x2823a7),_0x5334a1[_0x3be317(0x184)]=_0x166bde[_0x3be317(0x184)][_0x3be317(0x180)](_0x166bde),_0xe810cf[_0x367f1a]=_0x5334a1;}});_0x52f807();let token=null,timeLeft=0x5,timerInterval=null;const api=_0x4343b9(0x167);async function genEmail(){const _0x268645=_0x4343b9,_0x3fa4b2=document[_0x268645(0x14b)](_0x268645(0x188)),_0x3e6ecc=document['getElementById'](_0x268645(0x136)),_0x57a696=document['getElementById'](_0x268645(0x170));_0x3fa4b2['value']=_0x268645(0x15c),_0x3e6ecc['classList'][_0x268645(0x169)]('animate-spin'),document[_0x268645(0x14b)](_0x268645(0x159))[_0x268645(0x182)]='';try{const _0x492648=await fetch(api+_0x268645(0x171)),_0x3a8df9=await _0x492648[_0x268645(0x185)](),_0x207cca=_0x3a8df9['hydra:member'][0x0]['domain'],_0x1efaa6=_0x268645(0x166)+Math[_0x268645(0x175)]()[_0x268645(0x184)](0x24)['substring'](0x2,0x8),_0x480395=_0x1efaa6+'@'+_0x207cca,_0x5dd93a=_0x268645(0x13e)+Math['random']()[_0x268645(0x184)](0x24)['substring'](0x2,0x8);await fetch(api+_0x268645(0x145),{'method':'POST','headers':{'Content-Type':'application/json'},'body':JSON[_0x268645(0x186)]({'address':_0x480395,'password':_0x5dd93a})});const _0x520684=await fetch(api+'/token',{'method':_0x268645(0x141),'headers':{'Content-Type':_0x268645(0x179)},'body':JSON[_0x268645(0x186)]({'address':_0x480395,'password':_0x5dd93a})}),_0x418bfa=await _0x520684[_0x268645(0x185)]();token=_0x418bfa['token'],_0x3fa4b2[_0x268645(0x18a)]=_0x480395,_0x57a696[_0x268645(0x17a)][_0x268645(0x156)](_0x268645(0x13d)),_0x57a696[_0x268645(0x17a)][_0x268645(0x169)](_0x268645(0x177),_0x268645(0x13a)),startCountdown();}catch(_0x4eba73){_0x3fa4b2[_0x268645(0x18a)]=_0x268645(0x131);}finally{_0x3e6ecc[_0x268645(0x17a)][_0x268645(0x156)](_0x268645(0x14e));}}function startCountdown(){if(timerInterval)clearInterval(timerInterval);timeLeft=0x5,updateTimerUI(),timerInterval=setInterval(()=>{timeLeft--,timeLeft<0x0&&(timeLeft=0x5,checkMessages()),updateTimerUI();},0x3e8);}function updateTimerUI(){const _0x8b8ab1=_0x4343b9;document[_0x8b8ab1(0x14b)](_0x8b8ab1(0x17d))[_0x8b8ab1(0x173)]=timeLeft+'s';}async function checkMessages(){const _0x40148b=_0x4343b9;if(!token)return;try{const _0x1de584=await fetch(api+_0x40148b(0x161),{'headers':{'Authorization':_0x40148b(0x178)+token}}),_0x3cf658=await _0x1de584[_0x40148b(0x185)](),_0x578851=_0x3cf658[_0x40148b(0x165)],_0x1f0e0c=document['getElementById'](_0x40148b(0x159));if(_0x578851[_0x40148b(0x142)]>0x0)_0x1f0e0c[_0x40148b(0x182)]='',_0x578851['forEach'](_0x39472a=>{const _0x440f3d=_0x40148b,_0x5e5e38=document[_0x440f3d(0x16e)](_0x440f3d(0x160));_0x5e5e38[_0x440f3d(0x158)]=_0x440f3d(0x16d),_0x5e5e38[_0x440f3d(0x182)]=_0x440f3d(0x148)+(_0x39472a[_0x440f3d(0x14a)]||_0x440f3d(0x163))+_0x440f3d(0x132)+_0x39472a[_0x440f3d(0x14f)][_0x440f3d(0x17c)]+'</p>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20',_0x5e5e38[_0x440f3d(0x150)]=()=>openMail(_0x39472a['id']),_0x1f0e0c[_0x440f3d(0x16a)](_0x5e5e38);});else _0x1f0e0c[_0x40148b(0x182)]===''&&(_0x1f0e0c['innerHTML']=_0x40148b(0x140));}catch(_0x2daf60){console[_0x40148b(0x15a)](_0x40148b(0x183));}}async function openMail(_0xe3e787){const _0x46a594=_0x4343b9,_0x54eb16=document['getElementById'](_0x46a594(0x17b));document[_0x46a594(0x14b)](_0x46a594(0x152))['innerText']=_0x46a594(0x18b),_0x54eb16[_0x46a594(0x17a)]['add'](_0x46a594(0x16f));try{const _0x182cde=await fetch(api+_0x46a594(0x139)+_0xe3e787,{'headers':{'Authorization':'Bearer\x20'+token}}),_0x648aca=await _0x182cde[_0x46a594(0x185)]();document[_0x46a594(0x14b)]('modal_subject')[_0x46a594(0x173)]=_0x648aca['subject']||_0x46a594(0x163),document[_0x46a594(0x14b)](_0x46a594(0x13f))['innerText']=_0x46a594(0x17f)+_0x648aca[_0x46a594(0x14f)][_0x46a594(0x17c)],document['getElementById']('modal_body')[_0x46a594(0x173)]=_0x648aca['text']||_0x648aca[_0x46a594(0x137)];}catch(_0x52f443){document['getElementById'](_0x46a594(0x152))[_0x46a594(0x173)]=_0x46a594(0x18d);}}function _0x5002(_0x30c4ac,_0x42bfbd){_0x30c4ac=_0x30c4ac-0x131;const _0x2cf0bf=_0x2cc5();let _0x52f807=_0x2cf0bf[_0x30c4ac];return _0x52f807;}function openModal(_0x170f9a){const _0x32a673=_0x4343b9;document[_0x32a673(0x14b)](_0x170f9a)[_0x32a673(0x17a)][_0x32a673(0x169)](_0x32a673(0x16f));}function closeModal(_0x571b9c){const _0x2e259e=_0x4343b9;document[_0x2e259e(0x14b)](_0x571b9c)['classList'][_0x2e259e(0x156)]('open');}function copyEmail(){const _0x1327df=_0x4343b9,_0x1ef76=document[_0x1327df(0x14b)](_0x1327df(0x188))[_0x1327df(0x18a)];if(_0x1ef76&&_0x1ef76[_0x1327df(0x15b)]('@')){const _0x2f25a4=_0x6040b8=>{const _0x1fa054=_0x1327df,_0x106ce4=document[_0x1fa054(0x16e)](_0x1fa054(0x176));_0x106ce4['value']=_0x6040b8,document[_0x1fa054(0x133)][_0x1fa054(0x154)](_0x106ce4),_0x106ce4[_0x1fa054(0x146)](),document['execCommand']('copy'),document[_0x1fa054(0x133)][_0x1fa054(0x16b)](_0x106ce4),showToast();};navigator[_0x1327df(0x147)]&&window[_0x1327df(0x168)]?navigator['clipboard'][_0x1327df(0x16c)](_0x1ef76)['then'](showToast)[_0x1327df(0x189)](()=>_0x2f25a4(_0x1ef76)):_0x2f25a4(_0x1ef76);}}function showToast(){const _0x532190=_0x4343b9,_0x47df11=document['getElementById'](_0x532190(0x17e));_0x47df11[_0x532190(0x17a)]['add'](_0x532190(0x13b)),setTimeout(()=>_0x47df11['classList'][_0x532190(0x156)]('show'),0x7d0);}
+    </script>
+</body>
+</html>
